@@ -115,11 +115,15 @@ isEmpty() {
 # @return:	(none)
 mail_cleanup () {
   removeIO
-  
+
   # Remove annoying warning message since MySQL 5.6
   if [[ -s "$log_errfile" ]]; then
   sedtmpfile="/tmp/$(basename $0).$$.tmp"
-  grep -v "Warning: Using a password on the command line interface can be insecure." "$log_errfile" > $sedtmpfile
+  grep -v "Using a password on the command line interface can be insecure" "$log_errfile" > $sedtmpfile
+  perl -ni -e "print unless /zoneinfo/" $sedtmpfile
+  perl -ni -e "print unless /starting as process/" $sedtmpfile
+  perl -ni -e "print unless /--secure-file-priv/" $sedtmpfile
+  perl -ni -e "print unless /TIMESTAMP/" $sedtmpfile
   mv $sedtmpfile $log_errfile
   fi
 
@@ -128,7 +132,7 @@ mail_cleanup () {
   if [[ ! -e "$log_file" && ! -e "$log_errfile" ]];then
     echo "Skipping normal output methods, since the program exited before any log files could be created."
   else
-  
+
   # if slack if configured, send success or error message via web-hook
   if [[ -s "$log_errfile" ]]; then
     if [[ $CONFIG_SLACK_ERROR_WEBHOOK != '' ]]; then

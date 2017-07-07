@@ -59,6 +59,7 @@ define automysqlbackup::backup (
   $backup_file_perms    = '0400',
   # Automysqlbackup specific config settings
   $backup_dir                         = '',
+  $slack_web_hook                     = '',
   $mysql_dump_username                = '',
   $mysql_dump_password                = '',
   $mysql_dump_host                    = '',
@@ -188,7 +189,9 @@ define automysqlbackup::backup (
     'db_month_names'                    => $db_month_names,
     'db_exclude'                        => $db_exclude,
     'table_exclude'                     => $table_exclude,
-    'backup_local_files'                => $backup_local_files
+    'backup_local_files'                => $backup_local_files,
+    'SLACK_SUCCESS_WEBHOOK'             => $slack_web_hook,
+    'SLACK_ERROR_WEBHOOK'               => $slack_web_hook
   }
 
   # Last but not least, create the config file
